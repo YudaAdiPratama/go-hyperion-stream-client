@@ -1,6 +1,6 @@
 // hyperion_stream_client.go
 
-package main
+package client
 
 import (
 	"encoding/json"

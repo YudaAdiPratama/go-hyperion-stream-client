@@ -1,6 +1,6 @@
 // interfaces.go
 
-package main
+package client
 
 import "time"
 
