@@ -1,5 +1,3 @@
-// hyperion_stream_client.go
-
 package client
 
 import (
@@ -26,6 +24,7 @@ type HyperionStreamClient struct {
 	tempEventListeners map[string][]EventListener
 }
 
+// Constructor for HyperionStreamClient
 func NewHyperionStreamClient(options HyperionClientOptions) *HyperionStreamClient {
 	client := &HyperionStreamClient{
 		options:            options,
@@ -38,6 +37,7 @@ func NewHyperionStreamClient(options HyperionClientOptions) *HyperionStreamClien
 	return client
 }
 
+// Disconnect from the WebSocket server
 func (client *HyperionStreamClient) Disconnect() {
 	if client.socket != nil {
 		client.lastReceivedBlock = 0
@@ -48,10 +48,12 @@ func (client *HyperionStreamClient) Disconnect() {
 	}
 }
 
+// Set the WebSocket endpoint
 func (client *HyperionStreamClient) SetEndpoint(endpoint string) {
 	client.socketURL = endpoint
 }
 
+// Connect to the WebSocket server
 func (client *HyperionStreamClient) Connect() error {
 	if client.socketURL == "" {
 		return fmt.Errorf("endpoint was not defined")
@@ -69,6 +71,7 @@ func (client *HyperionStreamClient) Connect() error {
 	return nil
 }
 
+// Listen to incoming messages
 func (client *HyperionStreamClient) listenToMessages() {
 	for {
 		_, msg, err := client.socket.ReadMessage()
@@ -92,10 +95,12 @@ func (client *HyperionStreamClient) listenToMessages() {
 	}
 }
 
+// Listen to events (to be implemented)
 func (client *HyperionStreamClient) listenToEvents() {
 	// Implement event listening logic if needed
 }
 
+// Stream actions to the server
 func (client *HyperionStreamClient) StreamActions(request StreamActionsRequest) error {
 	if client.socket != nil && client.online {
 		data, err := json.Marshal(request)
@@ -114,6 +119,7 @@ func (client *HyperionStreamClient) StreamActions(request StreamActionsRequest) 
 	return fmt.Errorf("client is not connected")
 }
 
+// Stream deltas to the server
 func (client *HyperionStreamClient) StreamDeltas(request StreamDeltasRequest) error {
 	if client.socket != nil && client.online {
 		data, err := json.Marshal(request)
@@ -130,4 +136,14 @@ func (client *HyperionStreamClient) StreamDeltas(request StreamDeltasRequest) er
 		return nil
 	}
 	return fmt.Errorf("client is not connected")
+}
+
+// Public method to retrieve the data queue
+func (client *HyperionStreamClient) GetDataQueue() []IncomingData {
+	return client.dataQueue
+}
+
+// Public method to clear the data queue
+func (client *HyperionStreamClient) ClearDataQueue() {
+	client.dataQueue = []IncomingData{}
 }
